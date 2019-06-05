@@ -371,5 +371,42 @@ module Kraken
       hmac = OpenSSL::HMAC.digest('sha512', Base64.decode64(@api_secret), url)
       Base64.strict_encode64(hmac)
     end
+
+
+
+    # Private user funding (new code)
+
+    def get_deposit_methods(asset, aclass = nil)
+      post_private 'DepositMethods', aclass: aclass, asset: asset
+    end
+
+    def get_new_address(asset, method, new_address = false, aclass = nil)
+      post_private 'DepositAddresses', aclass: aclass, asset: asset, method: method, new: new_address
+    end
+
+    def get_deposit_status(asset, method, aclass = nil)
+      post_private 'DepositStatus', aclass: aclass, asset: asset, method: method
+    end
+
+    def get_withdrawal_info(asset, key, amount, aclass = nil)
+      post_private 'WithdrawInfo', aclass: aclass, asset: asset, key: key, amount: amount
+    end
+
+    def withdraw_funds(asset, key, amount, aclass = nil)
+      post_private 'Withdraw', aclass: aclass, asset: asset, key: key, amount: amount
+    end
+
+    def get_withdrawal_status(asset, method = nil, aclass = nil)
+      post_private 'WithdrawStatus', aclass: aclass, asset: asset, method: method
+    end
+
+    def req_withdrawal_cancel(asset, refied, aclass = nil)
+      post_private 'WithdrawCancel', aclass: aclass, asset: asset, refied: refied
+    end
+
+    def wallet_transfer(asset, amount, to = nil, from = nil)
+      post_private 'WalletTransfer', aclass: aclass, amount: amount, to: to, from: from
+    end
+
   end
 end
