@@ -332,7 +332,11 @@ module Kraken
     #
     def post_private(method, opts = {})
       url = "#{@api_private_url}#{method}"
-      nonce = opts['nonce'] = generate_nonce
+      nonce = opts['nonce'] = if Rails.env.test?
+                                1_562_012_703_098_112
+                              else
+                                generate_nonce
+                              end
       params = opts.map { |param| param.join('=') }.join('&')
 
       http = Curl.post(url, params) do |request|
@@ -372,8 +376,6 @@ module Kraken
       Base64.strict_encode64(hmac)
     end
 
-
-
     # Private user funding (new code)
 
     def get_deposit_methods(asset, aclass = nil)
@@ -404,9 +406,8 @@ module Kraken
       post_private 'WithdrawCancel', aclass: aclass, asset: asset, refied: refied
     end
 
-    def wallet_transfer(asset, amount, to = nil, from = nil)
+    def wallet_transfer(_asset, amount, to = nil, from = nil)
       post_private 'WalletTransfer', aclass: aclass, amount: amount, to: to, from: from
     end
-
   end
 end
